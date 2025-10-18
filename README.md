@@ -160,32 +160,42 @@ How could we fix that issue? Enter [PEP 722](https://peps.python.org/pep-0722/).
 Although this is something that you don't need to know for this seminar, just for your general Python general knowledge, a PEP is a [Python Enhancement Proposal](https://realpython.com/ref/glossary/pep/), a document that describes a feature implemented or proposed to be implemented in Python.
 PEP 722 is already implemented, you you can use it, or as we'll see `uv` can use it.
 It specifies how you should document the library requirements of a script in the same file.
-If you would read PEP 722 you would realize that the right why to document that our script requires both NumPy and matplotlib is to write this comment:
+If you would read PEP 722 you would realize that the right why to document that our script requires both NumPy and matplotlib is to write a comment similar to:
 
 ```
-# In order to run, this script needs the following 3rd party libraries
-#
-# Script Dependencies:
-#    matplotlib
-#    numpy
+# /// script
+# requires-python = ">=3.14"
+# dependencies = [
+#     "matplotlib",
+#     "numpy",
+# ]
+# ///
 ```
 
-You might try to write this comment manually and you might try to run the script with ```python scripts/mandelbrot.py```, but that would fail, again.
+You might try to write this comment manually (not a trivial thing to do) and you might try to run the script with ```python scripts/mandelbrot.py```, but that would fail, again.
 Why? Because although the script now describes which are the dependencies, the `python` command will ignore the comment.
 So, what's the point then? We'll, just use `uv` and everything will be fixed for you.
 
 First, `uv` can add the dependencies to the file for us.
 
+```bash
+$ uv add --script scripts/mandelbrot.py 'matplotlib' 'numpy'
+Updated `scripts/mandelbrot.py`
+```
 
+Now uv has added the dependencies comment for us to the file and moreover, if we run the script using uv, it will get and use the required libraries for us.
+*`uv` add* is the way to add dependencies to a script or project.
 
+```bash
+$ uv run scripts/mandelbrot.py
+Installed 11 packages in 20ms
+Saved image to mandelbrot.png
+```
 
+The first time that you run the script it might take a while because it might have to download the libraries, but don't worry, the second time it'll be much faster because `uv`caches the libraries.
 
-One very big advantage of uv is that in order to run Python software you don't need to install any Python or, if the code is well configure, even any package, uv will do it for you
+## Virtualenvs
 
-Running scripts
-Simple scripts with only standard library dependencies
-Scripts with package dependencies
-Virtualenvs
 Installing a Python package involves, basically, copying the package contents to a location in which Python looks for files when trying to import modules. 
 Also, in the case of packages that include non-Python code like pandas or NumPy the installer might have to copy compiled code or even might have to compile the code, a quite involved process.
 
