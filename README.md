@@ -156,10 +156,21 @@ If you are used to install your Python libraries in the system `python` using `p
 `uv` uses a virtual environment (more about that later) for each run, so installing matplotlib in the system `python` won't solve the issue.
 Moreover, even if you would use your system `python` and `pip` you would still have a problem, if you would try to run this script in the future or in a different system you might not have the required libraries installed, and if you send the script to a colleague or a friend, it won't work unless he also installs the libraries, and that information is not included in the script.
 
+`uv` allows us to specify the dependencies when we run a script.
+
+```bash
+$ uv run --with "numpy, matplotlib" scripts/mandelbrot.py 
+Installed 11 packages in 38ms
+Saved image to mandelbrot.png
+```
+
+That has solved our problem, but it is not an ideal solution because we need to remember to add the dependencies to the command every time we try to run the script.
 How could we fix that issue? Enter [PEP 722](https://peps.python.org/pep-0722/).
+
 Although this is something that you don't need to know for this seminar, just for your general Python general knowledge, a PEP is a [Python Enhancement Proposal](https://realpython.com/ref/glossary/pep/), a document that describes a feature implemented or proposed to be implemented in Python.
 PEP 722 is already implemented, you you can use it, or as we'll see `uv` can use it.
 It specifies how you should document the library requirements of a script in the same file.
+
 If you would read PEP 722 you would realize that the right why to document that our script requires both NumPy and matplotlib is to write a comment similar to:
 
 ```
@@ -192,12 +203,80 @@ Installed 11 packages in 20ms
 Saved image to mandelbrot.png
 ```
 
-The first time that you run the script it might take a while because it might have to download the libraries, but don't worry, the second time it'll be much faster because `uv`caches the libraries.
+The first time that you run the script it might take a while because it might have to download the libraries, but don't worry, the second time it'll be much faster because `uv`[caches](https://en.wikipedia.org/wiki/Cache_(computing)) the libraries.
 
-## Virtualenvs
+## Virtual environments
 
 Installing a Python package involves, basically, copying the package contents to a location in which Python looks for files when trying to import modules. 
 Also, in the case of packages that include non-Python code like pandas or NumPy the installer might have to copy compiled code or even might have to compile the code, a quite involved process.
+In any case, should be copied to some location in which the Python interpreter will be able to find them when they are required.
+
+You don't need to do this, and you don't need to know which are these location, but if you are curious, you can ask the Python interpreter to show you these locations.
+
+```bash
+$ uv run python
+Python 3.14.0 (main, Oct 14 2025, 21:27:55) [Clang 20.1.4 ] on linux
+Type "help", "copyright", "credits" or "license" for more information.
+>>> import sys
+>>> print(sys.path)
+['', '/home/jose/.local/share/uv/python/cpython-3.14.0-linux-x86_64-gnu/lib/python314.zip', '/home/jose/.local/share/uv/python/cpython-3.14.0-linux-x86_64-gnu/lib/python3.14', '/home/jose/.local/share/uv/python/cpython-3.14.0-linux-x86_64-gnu/lib/python3.14/lib-dynload', '/home/jose/.local/share/uv/python/cpython-3.14.0-linux-x86_64-gnu/lib/python3.14/site-packages']
+```
+
+In my case these locations are all managed by `uv` because I have run *uv run python* and not just the system Python, but the result will vary with your Python installation.
+
+In any case, if you don't use `uv` be very aware that, if you don't use virtual environments, pip will install the Python packages in system wide directories that will be used by all your projects and that implies some problems.
+
+### Incompatible library versions
+
+Python libraries often add incompatible changes between versions, for instance, they might first deprecate and then remove some features.
+
+Let's try to run the `legacy_emoji.py` script:
+
+```bash
+$ uv run --with emoji scripts/legacy_emoji.py 
+Installed 1 package in 15ms
+Traceback (most recent call last):
+  File "/home/jose/docencia/uv_seminar/scripts/legacy_emoji.py", line 4, in <module>
+    print(emoji.emojize("Python is :thumbs_up:", use_aliases=True))
+          ~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+TypeError: emojize() got an unexpected keyword argument 'use_aliases'
+```
+
+We could run this code with an old version of the library:
+
+```bash
+$ uv run --with "emoji<1.0" scripts/legacy_emoji.py 
+      Built emoji==0.6.0
+Installed 1 package in 0.33ms
+Python is 👍
+```
+
+So, we might think that installing the old version at the system level would solve our problem, but that, obviously, is not a great idea.
+One problem is that projects that depend of modern version would not work.
+
+```bash
+$ uv run --with "emoji<1.0" scripts/modern_emoji.py 
+Traceback (most recent call last):
+  File "/home/jose/docencia/uv_seminar/scripts/modern_emoji.py", line 4, in <module>
+    print(emoji.emojize("Python is :thumbs_up:", language="alias"))
+          ~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+TypeError: emojize() got an unexpected keyword argument 'language'
+```
+
+We could run the modern code with a modern version of the library:
+
+```bash
+$ uv run --with "emoji>2.0" scripts/modern_emoji.py 
+Python is 👍
+```
+
+
+
+
+I'm going
+
+
+
 
 Maybe you are used to installing packages by just opening a terminal and just running pip, don't do that.
 Installing packages outside a virtual environment[https://docs.python.org/3/glossary.html#term-virtual-environment] is a very, very bad idea.
