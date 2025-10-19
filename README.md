@@ -270,109 +270,145 @@ $ uv run --with "emoji>2.0" scripts/modern_emoji.py
 Python is 👍
 ```
 
+So, if we install an old version of the library, the modern code won't work and if we install a modern version, the old code won't work.
+Are we in an insolvable catch-22 situation? If we only had the system Python and system wide library installs we would, but, fortunately we can use virtual environments to isolate projects and library installations, so we can have different versions of the same library installed for different projects.
 
+You might be thinking that the example that I have just shown is contrived and that that would not happen usually, but if you do, you better think twice.
+Libraries are removing old code and, especially, old APIs all the time. For instance, NumPy and pandas hav done it recently. So if you created a project that depends on Numpy or pandas a year or a couple of years ago, that code might not run anymore with the current versions of the library.
 
+If you install packages by just opening a terminal and running pip, you work might be not reproducible. For once, you are not being explicit of the libraries upon which your current project depends, and moreover, library versions for different projects might be incompatible.
 
-I'm going
-
-
-
-
-Maybe you are used to installing packages by just opening a terminal and just running pip, don't do that.
-Installing packages outside a virtual environment[https://docs.python.org/3/glossary.html#term-virtual-environment] is a very, very bad idea.
+ Installing packages outside a virtual environment[https://docs.python.org/3/glossary.html#term-virtual-environment] is a very, very bad idea.
 I repeat, if you care at all for the sanity of your system or for the reproducibility of your work, do not install packages outside a virtual environment.
-What is a virtual environment
+
+### What is a virtual environment
+
 A Python virtual environment[https://docs.python.org/3/glossary.html#term-virtual-environment] is an isolated workspace that contains its own installation of Python and its own set of packages, independent from the system’s global Python. It allows you to manage project-specific dependencies without interfering with other projects or requiring administrator permissions. Each virtual environment keeps its own site-packages directory and can have different library versions, ensuring that software runs reproducibly.
-Why do I need a virtualenv?
-For a standard Python user, even for one not working on large projects, **virtual environments offer several practical advantages**:
+
+For a standard Python user, even for one not working on large projects, virtual environments offer several **practical advantages**:
 
 1. **Avoid dependency conflicts:**
    Different projects often require different versions of the same package. A virtual environment keeps each project’s dependencies separate, so updating one package doesn’t break another project.
 
-2. **Ensure reproducibility:**
-   If you manage your environment using a list of dependencies (e.g., `requirements.txt` or `pyproject.toml`), your code will be able to run by others, or by you in the future, under the exact same conditions.
-
-3. **Keep the system Python clean:**
+2. **Keep the system Python clean:**
    Installing packages globally can clutter or even damage the system Python (especially on Linux or macOS, where it’s used by the OS). Virtual environments prevent that risk by isolating installations. In fact, if you use uv you won't even need a system Python at all.
 
-4. **Simplify deployment:**
-   When you deploy a project, you will be able to create the same environment easily in a different machine. If you have just Python dependencies virtual environments will be everything you need, but if you have other dependencies, like non-Python command line tools you might want to familiarize yourself with container (using tools like Docker or Podman).
-
-5. **Experiment safely:**
+3. **Experiment safely:**
    You can try new packages, versions, or configurations without affecting your main setup. If something goes wrong, you just delete the environment and start fresh.
 
-The best part is that uv manages your virtual environments for you, you can even forget about them.
 
+## Projects
 
+Virtual environments are great, but it would be even better avoid managing them because when you install your packages manually you are not being explicit about which packages are installed in the environment and which versions are you using.
+So, the most reproducible approach is to list the requirements of every project in a file and let a tool, like `uv` manage the environment for you following your explicit declaration of the library requirements.
+This automatic management: 
 
+1. **Ensures reproducibility:**
+   If you manage your environment using a list of dependencies (e.g., `requirements.txt` or `pyproject.toml`), your code will be able to run by others, or by you in the future, under the exact same conditions.
 
-Project management
-Why do I need project management or single scripts with proper dependency management?
+2. **Simplifies deployment:**
+   When you deploy a project, you will be able to create the same environment easily in a different machine. If you have just Python dependencies virtual environments will be everything you need, but if you have other dependencies, like non-Python command line tools you might want to familiarize yourself with container (using tools like Docker or Podman).
 
-initializing and structuring Python projects
+And the best part is that uv manages your virtual environments for you, you can even forget about them.
 
-UV's lockfile approach ensures consistent environments across different systems
-lock files to ensure reproducible environments
+## Project management
 
-Dependency locking.
+A project is just a directory with some files that indicate some essential information about it, like, for instance, the library requirements.
+Let's create a project with `uv`:
 
-Initializing a new project
+```bash
+$ uv init legacy_libraries
+Initialized project `legacy-libraries` at `/home/jose/docencia/uv_seminar/legacy_libraries`
+$ ls legacy_libraries/
+main.py  pyproject.toml  README.md
+```
 
-$ uv init explore-uv
+`uv` has created a new directory *legacy_libraries* with some files in it:
 
-The command will immediately create a new explore-uv directory with the following contents:
-$ cd explore-uv
-$ tree -a
+- *main.py* and README.md are just some stubs.
+- *.python_version* just states the default Python version to use in your project.
+- *pyproject.toml* will hold, among other configurations, the list of library dependencies.
 
-Git is automatically initialized and main git-related files like .gitignore and an empty README.md are generated. .python-version file contains the Python version used for the project, while pyproject.toml serves as the main configuration file for project metadata and dependencies. A sample hello.py file is also created to help you get started quickly.
+Copy the *legacy_emoji.py* file to the project directory and try to run it.
 
-Do the option with library
+```bash
+$ cp scripts/legacy_emoji.py legacy_libraries/
+$ cd legacy_libraries/
+legacy_libraries$ uv run legacy_emoji.py 
+Using CPython 3.14.0
+Creating virtual environment at: .venv
+Traceback (most recent call last):
+  File "/home/jose/docencia/uv_seminar/legacy_libraries/legacy_emoji.py", line 1, in <module>
+    import emoji
+ModuleNotFoundError: No module named 'emoji'
+```
 
-Adding dependencies to the project.
+It fails because we haven't added the emoji library to the project. Let's fix that problem.
 
-Adding devel dependencies to the project
+```bash
+$ uv add "emoji<1.0"
+Resolved 2 packages in 86ms
+Prepared 1 package in 233ms
+Installed 1 package in 11ms
+ + emoji==2.15.0
+```
 
+`uv` has added the *emoji* dependency to the *pyproject.toml* file.
+
+```toml
+dependencies = [
+    "emoji<1.0",
+]
+```
+
+`uv` has also created a virtual environment and has installed the library in it.
+
+```bash
+$ ls .venv/
+bin  CACHEDIR.TAG  lib  lib64  pyvenv.cfg
+```
+
+This will be the virtual environment that `uv` will use to run the code in that project.
 The first time you run the add command, UV creates a new virtual environment in the current working directory and installs the specified dependencies. Be aware this virtual environment will be automatically managed by uv, so just ignore it, and do not try to use pip in it.
+`uv` and `pip` should not be used at the same time in the same environment, and moreover, `uv` might decide to remove or update the virtual environment directory at any time.
 
+Finally, `uv` has created a new important file: *uv.lock*.
+This file includes the exact version or the libraries that are installed in the environment and the source of the code installed. So, this file is critical for reproducibility and you have to included it in your `git` repository. (If you don't know or you don't use a source [version control](https://en.wikipedia.org/wiki/Version_control) system, you need to study that.)
 
-This new environment doesn't have the dependencies listed in your pyproject.toml file, so you have to install them with the following command:
+Try to run the code again.
+
+```bash
+$ uv run legacy_emoji.py 
+Python is 👍
+```
+
+Now, not only the code works, but you can be sure that it will run in the future or in any other system.
+
+As an exercise create another project to run the modern version of the emoji code: "modern_emoji.py".
+
+### Adding the own project library
+
+In many cases you'll need to install the library that you are developing to the virtual environment of the project. You can do that.
+
+```bash
 $ uv pip install -e .
+```
 
+### Requirements.txt
 
-Changing Python versions for the current project 
+If you need to create a requirement.txt file `uv` can do it for you, for instance because somebody that you work with is not using `uv`, you can do it with:
 
-You can switch Python versions for your current UV project at any point as long as the new version satisfies the specifications in your pyproject.toml file
-you can change the Python version in .python-version file to any version above, like 3.11.7. Afterwards, call uv sync.
-
-When you run uv add commands to install dependencies, UV automatically generates and updates a uv.lock file. This lock file serves several critical purposes:
-- It records the exact versions of all dependencies and their sub-dependencies that were installed.
-- It ensures reproducible builds by "locking" dependency versions across different environments.
-- It helps prevent "dependency hell" by maintaining consistent package versions.
-- It speeds up installations since UV can use the locked versions instead of resolving dependencies again.
-
-Lock files are essential for development to maintain reproducible builds and prevent dependency conflicts.
-UV manages the lock file automatically - you don't need to manually edit it. The lock file should be committed to version control to ensure all developers use the same dependency versions.
-
-Requirements.txt files are better suited for deployment scenarios or when sharing code with users who may not use UV
-You can maintain both files by using UV's lock file for development while generating a requirements.txt for deployment. To generate a requirements.txt from a UV lock file, use the following command:
+```bash
 $ uv export -o requirements.txt
+```
 
-Updating dependencies
-The add command can be used again in these and any other scenario where you need to change the constraints or versions of existing dependencies.
 
-1. Installing the latest version of a package:
-$ uv add requests
+## Other features
 
-2. Installing a specific version:
-$ uv add requests=2.1.2
+We have just scratched the surface of what `uv` is able to do or of what you can configure in it.
+Remember that `uv` has an extensive [documentation](https://docs.astral.sh/uv/) that is updated all the time.
 
-3. Change the bounds of a package's constraints:
-$ uv add 'requests<3.0.0'
-
-Adding optional dependencies
-
-Dependency groups
-
+## Additional documentation
 
 
 https://www.datacamp.com/tutorial/python-uv
