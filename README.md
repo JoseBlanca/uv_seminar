@@ -81,9 +81,10 @@ Although `conda` is free software, the anaconda distribution is [not free](https
 [`uv`](https://docs.astral.sh/uv/) is a Swiss Army Knife that can replace many other tools. It can:
 
 - Bootstrap the Python installation.
-- Create and manage virtual environments.
 - Run Python scripts taking care of its dependencies.
 - Manage Python projects.
+- Reproduce working environments.
+- Create and manage virtual environments.
 
 `uv` can replace totally or partially:
 - Package installers like: `pip` or `conda`.
@@ -99,6 +100,12 @@ Once you install it, run it to check that everything is OK:
 
 ```bash
 $ uv self version
+```
+
+To update `uv` to the latest version run:
+
+```
+$ uv self update
 ```
 
 ## Managing Python versions
@@ -410,10 +417,12 @@ Remember that `uv` has an extensive [documentation](https://docs.astral.sh/uv/) 
 
 ## Additional documentation
 
+The [Real Python](https://realpython.com/) [`uv` tutorial](https://realpython.com/python-uv/).
 
-https://www.datacamp.com/tutorial/python-uv
+`uv` [introduction at datacamp](https://www.datacamp.com/tutorial/python-uv).
 
-https://realpython.com/python-uv/
+
+
 
 https://realpython.com/python-virtual-environments-a-primer/
 
