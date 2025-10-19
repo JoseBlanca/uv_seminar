@@ -18,9 +18,16 @@ do:
 $ uv run my_program.py
 ```
 
-## Who is this course for
+## Who is this seminar for
 
 I'm assuming that you already use Python because you find it useful, so this is not a Python seminar, this is a Python tooling seminar, we'll talk about tools that will make you pythoning more productive, but not about how to write better Python programs.
+
+You will need a computer in which to [install `uv`](https://docs.astral.sh/uv/getting-started/installation/) and that's about it.
+
+Finally, I'm also assuming that you don't know `uv`, if you already do, this introduction is not for you.
+
+What you don't need is previous knowledge about virtual environments, project management or Python packages.
+
 
 ## Package management
 
@@ -110,6 +117,10 @@ $ uv self update
 
 ## Managing Python versions
 
+There are many ways of installing Python.
+You can go to [python.org](https://www.python.org/) download the latest Python version and install it,
+you can get it using the software package manager or software store of your Operating System or you can use other tools, and now you get new way, the one that I consider the simplest and most convenient way and the one that I now recommend: `uv`.
+
 `uv` can work with the Python software installed in your system, but it is not necessary to have any Python installed at all, if you don't have it `uv` will do it for you.
 Nowadays, I usually don't have a system Python installed in my computer, I just use `uv`.
 
@@ -137,6 +148,15 @@ Python 3.14.0 (main, Oct 14 2025, 21:27:55) [Clang 20.1.4 ] on linux
 Type "help", "copyright", "credits" or "license" for more information.
 >>> print('Hello')
 ```
+
+`uv`can install Python:
+
+- In the same way across any Operating System.
+- Without administrative privileges.
+- Independently of the Python system.
+- Managing different Python versions without conflicts between them.
+
+All that being said, you don't need to install Python using `uv` in order to use any of the other `uv` capabilities, `uv` will work with almost any Python available, independently of how you have installed it.
 
 ## Running Python scripts
 
@@ -214,27 +234,11 @@ The first time that you run the script it might take a while because it might ha
 
 ## Virtual environments
 
-Installing a Python package involves, basically, copying the package contents to a location in which Python looks for files when trying to import modules. 
-Also, in the case of packages that include non-Python code like pandas or NumPy the installer might have to copy compiled code or even might have to compile the code, a quite involved process.
-In any case, should be copied to some location in which the Python interpreter will be able to find them when they are required.
-
-You don't need to do this, and you don't need to know which are these location, but if you are curious, you can ask the Python interpreter to show you these locations.
-
-```bash
-$ uv run python
-Python 3.14.0 (main, Oct 14 2025, 21:27:55) [Clang 20.1.4 ] on linux
-Type "help", "copyright", "credits" or "license" for more information.
->>> import sys
->>> print(sys.path)
-['', '/home/jose/.local/share/uv/python/cpython-3.14.0-linux-x86_64-gnu/lib/python314.zip', '/home/jose/.local/share/uv/python/cpython-3.14.0-linux-x86_64-gnu/lib/python3.14', '/home/jose/.local/share/uv/python/cpython-3.14.0-linux-x86_64-gnu/lib/python3.14/lib-dynload', '/home/jose/.local/share/uv/python/cpython-3.14.0-linux-x86_64-gnu/lib/python3.14/site-packages']
-```
-
-In my case these locations are all managed by `uv` because I have run *uv run python* and not just the system Python, but the result will vary with your Python installation.
-
-In any case, if you don't use `uv` be very aware that, if you don't use virtual environments, pip will install the Python packages in system wide directories that will be used by all your projects and that implies some problems.
+![Not using virtual environments, this is fine](is_fine.jpg)
 
 ### Incompatible library versions
 
+Virtual environments allow you to create isolated environments that use different versions of libraries or Python itself. 
 Python libraries often add incompatible changes between versions, for instance, they might first deprecate and then remove some features.
 
 Let's try to run the `legacy_emoji.py` script:
@@ -285,7 +289,7 @@ Libraries are removing old code and, especially, old APIs all the time. For inst
 
 If you install packages by just opening a terminal and running pip, you work might be not reproducible. For once, you are not being explicit of the libraries upon which your current project depends, and moreover, library versions for different projects might be incompatible.
 
- Installing packages outside a virtual environment[https://docs.python.org/3/glossary.html#term-virtual-environment] is a very, very bad idea.
+Installing packages outside a virtual environment[https://docs.python.org/3/glossary.html#term-virtual-environment] is a very, very bad idea.
 I repeat, if you care at all for the sanity of your system or for the reproducibility of your work, do not install packages outside a virtual environment.
 
 ### What is a virtual environment
@@ -302,6 +306,26 @@ For a standard Python user, even for one not working on large projects, virtual 
 
 3. **Experiment safely:**
    You can try new packages, versions, or configurations without affecting your main setup. If something goes wrong, you just delete the environment and start fresh.
+
+Installing a Python package involves, basically, copying the package contents to a location in which Python looks for files when trying to import modules. 
+This location might be a general, system-wide, one or a different place for every project.
+A [virtual environment](https://docs.python.org/3/glossary.html#term-virtual-environment) is just a folder with several subfolders in it that will hold a symlink to a `python` executable along with any library that you install in that environment, and usually you have one such environment for every project.
+This environments keep each project isolated from every other project and from the system-wide Python installation.
+
+You don't need to know were your packages are installed, but if you are curious, you can ask the Python interpreter to show you these locations.
+
+```bash
+$ uv run python
+Python 3.14.0 (main, Oct 14 2025, 21:27:55) [Clang 20.1.4 ] on linux
+Type "help", "copyright", "credits" or "license" for more information.
+>>> import sys
+>>> print(sys.path)
+['', '/home/jose/.local/share/uv/python/cpython-3.14.0-linux-x86_64-gnu/lib/python314.zip', '/home/jose/.local/share/uv/python/cpython-3.14.0-linux-x86_64-gnu/lib/python3.14', '/home/jose/.local/share/uv/python/cpython-3.14.0-linux-x86_64-gnu/lib/python3.14/lib-dynload', '/home/jose/.local/share/uv/python/cpython-3.14.0-linux-x86_64-gnu/lib/python3.14/site-packages']
+```
+
+In my case these locations are all managed by `uv` because I have run *uv run python* and not just the system Python, but the result will vary with your Python installation.
+
+In any case, if you don't use `uv` be very aware that, if you don't use virtual environments, pip will install the Python packages in system wide directories that will be used by all your projects and that implies some problems.
 
 
 ## Projects
@@ -417,30 +441,14 @@ Remember that `uv` has an extensive [documentation](https://docs.astral.sh/uv/) 
 
 ## Additional documentation
 
+The official [`uv` documentation](https://docs.astral.sh/uv/).
+
 The [Real Python](https://realpython.com/) [`uv` tutorial](https://realpython.com/python-uv/).
 
-`uv` [introduction at datacamp](https://www.datacamp.com/tutorial/python-uv).
+[`uv` introduction](https://www.datacamp.com/tutorial/python-uv) at datacamp.
 
+If you want to learn more about virtual environments and, specially, if you want to manage them manually (something seldom required if you use uv) take a look at the comprehensive Real Python [virtual environment primer](https://realpython.com/python-virtual-environments-a-primer/).
 
+Another [introduction](https://www.saaspegasus.com/guides/uv-deep-dive/) to `uv`.
 
-
-https://realpython.com/python-virtual-environments-a-primer/
-
-https://www.bitecode.dev/p/a-year-of-uv-pros-cons-and-should
-
-https://www.saaspegasus.com/guides/uv-deep-dive/
-
-https://realpython.com/uv-vs-pip/
-
-https://medium.com/@digitalpower/comparing-the-best-python-project-managers-46061072bc3f
-
-https://martynassubonis.substack.com/p/python-project-management-primer
-
-https://martynassubonis.substack.com/p/python-project-management-primer-a55
-
-https://realpython.com/python-pyproject-toml/
-
-https://dagster.io/blog/python-project-best-practices
-
-https://bury-thomas.medium.com/mastering-python-project-management-with-uv-part-4-ci-cd-docker-ed4128fdd0c1
-https://snarky.ca/why-it-took-4-years-to-get-a-lock-files-specification/
+More information about the [pyproject.toml](https://realpython.com/python-pyproject-toml/) file.
