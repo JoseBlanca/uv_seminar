@@ -28,12 +28,33 @@ Finally, I'm also assuming that you don't know `uv`, if you already do, this int
 
 What you don't need is previous knowledge about virtual environments, project management or Python packages.
 
+## Objetives
 
-## Package management
+After this seminar you will be able to:
+
+- Install and update Python with uv.
+- Understand what virtual environments and lock files are.
+- Run scripts with isolated dependencies.
+- Create and manage reproducible projects.
+
+## PyPI
 
 Packages, libraries or modules are the true strength of any programming language, whether you do data analysis, create web services or UI applications you need them.
 
-[`pip`](https://en.wikipedia.org/wiki/Pip_(package_manager)) has been so far the standard and [recommended](https://packaging.python.org/en/latest/guides/tool-recommendations/#installing-packages) tool to install Python packages.
+[PyPI](https://pypi.org/) (**Py**thon **P**ackaging **I**ndex) is the standard Python package repository.
+PyPI, is the central repository where the Python community publishes and distributes open-source packages.
+It serves as the default source for the pip installer, meaning that when a user runs *pip install numpy*, pip connects to PyPI, locates the NumPy package, downloads the appropriate archive, and installs it in the current environment.
+
+PyPI hosts hundreds of thousands of packages covering nearly every domain of programming, from scientific computing and web development to natural language processing and bioinformatics.
+
+Beyond being a distribution hub, PyPI plays a central role in the Python ecosystem’s reproducibility and collaboration. It provides a standardized way for developers to share code, manage versions, and integrate continuous delivery pipelines.
+
+PyPI is a critical infrastructure that underpins nearly all modern Python development.
+
+## Package management
+
+Before `uv` the main package management tool was [`pip`](https://en.wikipedia.org/wiki/Pip_(package_manager)).
+In fact `pip`has been almost the standard and [recommended](https://packaging.python.org/en/latest/guides/tool-recommendations/#installing-packages) tool to install Python packages.
 In most Python package installation instructions you will see commands with the form:
 
 ```bash
@@ -45,18 +66,6 @@ Any package manager has to take into account package dependencies, for instance,
 
 Besides [`pip`](https://en.wikipedia.org/wiki/Pip_(package_manager)), there are other package installers, like [`conda`](https://docs.conda.io/projects/conda/) or [`uv`](https://docs.astral.sh/uv/).
 As we will see `conda`and `uv` have extra features not available in `pip`.
-
-## PyPI
-
-[PyPI](https://pypi.org/) (**Py**thon **P**ackaging **I**ndex) is the standard Python package repository, and `pip` has been, so fare, the most used tool to fetch packages from it.
-PyPI, is the central repository where the Python community publishes and distributes open-source packages.
-It serves as the default source for the pip installer, meaning that when a user runs *pip install numpy*, pip connects to PyPI, locates the NumPy package, downloads the appropriate archive, and installs it in the current environment.
-
-PyPI hosts hundreds of thousands of packages covering nearly every domain of programming, from scientific computing and web development to natural language processing and bioinformatics.
-
-Beyond being a distribution hub, PyPI plays a central role in the Python ecosystem’s reproducibility and collaboration. It provides a standardized way for developers to share code, manage versions, and integrate continuous delivery pipelines.
-
-PyPI is a critical infrastructure that underpins nearly all modern Python development.
 
 ## conda
 
@@ -100,6 +109,15 @@ Although `conda` is free software, the anaconda distribution is [not free](https
 
 While these tools remain viable options, `uv` integration and speed make it more convenient and fast.
 Moreover, `uv` is multiplatform (Windows, Mac, and Linux), very fast, in most cases, does not require administrative privileges to be installed and it [free software](https://en.wikipedia.org/wiki/Free_and_open-source_software).
+
+| Tool    | Strengths                   | Weaknesses               |
+| ------- | --------------------------- | ------------------------ |
+| `pip`   | Ubiquitous, standard        | No project management    |
+| `conda` | Handles non-Python deps     | Slow, separate ecosystem |
+| `uv`    | Fast, unified, reproducible | Newer, still evolving    |
+
+
+### uv installation
 
 Install `uv` following its [installation](https://docs.astral.sh/uv/getting-started/installation/) instructions for your Operating System and remember that it has a quite comprehensive [documentation](https://docs.astral.sh/uv/).
 
@@ -191,11 +209,11 @@ Installed 11 packages in 38ms
 Saved image to mandelbrot.png
 ```
 
-That has solved our problem, but it is not an ideal solution because we need to remember to add the dependencies to the command every time we try to run the script.
+That has solved our problem, but it is not an ideal solution because we need to remember to add the dependencies, by using the `--with` parameter, to the command every time we try to run the script.
 How could we fix that issue? Enter [PEP 722](https://peps.python.org/pep-0722/).
 
 Although this is something that you don't need to know for this seminar, just for your general Python general knowledge, a PEP is a [Python Enhancement Proposal](https://realpython.com/ref/glossary/pep/), a document that describes a feature implemented or proposed to be implemented in Python.
-PEP 722 is already implemented, you you can use it, or as we'll see `uv` can use it.
+PEP 722 is already implemented, so you can use it, or as we'll see `uv` can use it.
 It specifies how you should document the library requirements of a script in the same file.
 
 If you would read PEP 722 you would realize that the right why to document that our script requires both NumPy and matplotlib is to write a comment similar to:
@@ -285,7 +303,7 @@ So, if we install an old version of the library, the modern code won't work and 
 Are we in an insolvable catch-22 situation? If we only had the system Python and system wide library installs we would, but, fortunately we can use virtual environments to isolate projects and library installations, so we can have different versions of the same library installed for different projects.
 
 You might be thinking that the example that I have just shown is contrived and that that would not happen usually, but if you do, you better think twice.
-Libraries are removing old code and, especially, old APIs all the time. For instance, NumPy and pandas hav done it recently. So if you created a project that depends on Numpy or pandas a year or a couple of years ago, that code might not run anymore with the current versions of the library.
+Libraries are removing old code and, especially, old APIs all the time. For instance, NumPy and pandas have done it recently. So if you created a project that depends on Numpy or pandas a year or a couple of years ago, that code might not run anymore with the current versions of the library.
 
 If you install packages by just opening a terminal and running pip, you work might be not reproducible. For once, you are not being explicit of the libraries upon which your current project depends, and moreover, library versions for different projects might be incompatible.
 
@@ -312,7 +330,7 @@ This location might be a general, system-wide, one or a different place for ever
 A [virtual environment](https://docs.python.org/3/glossary.html#term-virtual-environment) is just a folder with several subfolders in it that will hold a symlink to a `python` executable along with any library that you install in that environment, and usually you have one such environment for every project.
 This environments keep each project isolated from every other project and from the system-wide Python installation.
 
-You don't need to know were your packages are installed, but if you are curious, you can ask the Python interpreter to show you these locations.
+You don't need to know where your packages are installed, but if you are curious, you can ask the Python interpreter to show you these locations.
 
 ```bash
 $ uv run python
@@ -330,7 +348,8 @@ In any case, if you don't use `uv` be very aware that, if you don't use virtual 
 
 ## Projects
 
-Virtual environments are great, but it would be even better avoid managing them because when you install your packages manually you are not being explicit about which packages are installed in the environment and which versions are you using.
+Virtual environments are great, they allow us to isolate dependencies, but it would be even better avoid managing them, to be able to automatically install in a reproducible way the environments in which we are working.
+When you install your packages manually you are not being explicit about which packages are installed in the environment and which versions are you using.
 So, the most reproducible approach is to list the requirements of every project in a file and let a tool, like `uv` manage the environment for you following your explicit declaration of the library requirements.
 This automatic management: 
 
@@ -419,7 +438,9 @@ As an exercise create another project to run the modern version of the emoji cod
 
 ### Adding the own project library
 
-In many cases you'll need to install the library that you are developing to the virtual environment of the project. You can do that.
+In many cases you'll need to install the library that you are developing to the virtual environment of the project.
+This is mostly needed when your own code should be importable as a package, e.g. for testing or using a CLI entry point.
+You can do that.
 
 ```bash
 $ uv pip install -e .
@@ -427,7 +448,7 @@ $ uv pip install -e .
 
 ### Requirements.txt
 
-If you need to create a requirement.txt file `uv` can do it for you, for instance because somebody that you work with is not using `uv`, you can do it with:
+If you need to create a requirement.txt file `uv` can do it for you, for instance because somebody that you work with is not using `uv`, you can generate it with:
 
 ```bash
 $ uv export -o requirements.txt
