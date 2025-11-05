@@ -20,7 +20,7 @@ $ uv run my_program.py
 
 ## Who is this seminar for
 
-I'm assuming that you already use Python because you find it useful, so this is not a Python seminar, this is a Python tooling seminar, we'll talk about tools that will make you pythoning more productive, but not about how to write better Python programs.
+I'm assuming that you already use Python, so this is not a Python seminar, this is a Python tooling seminar, we'll talk about tools that will make you pythoning more productive, but not about how to write better Python programs.
 
 You will need a computer in which to [install `uv`](https://docs.astral.sh/uv/getting-started/installation/) and that's about it.
 
@@ -454,11 +454,41 @@ If you need to create a requirement.txt file `uv` can do it for you, for instanc
 $ uv export -o requirements.txt
 ```
 
-
 ## Other features
 
 We have just scratched the surface of what `uv` is able to do or of what you can configure in it.
 Remember that `uv` has an extensive [documentation](https://docs.astral.sh/uv/) that is updated all the time.
+
+## Exercises
+
+### Install and update uv
+
+Install uv and check its version.
+
+<details>
+<summary>💡 Click to show solution</summary>
+
+```{bash}
+$ uv -V
+```
+
+</details>
+
+Update uv to the latest version.
+
+<details>
+<summary>💡 Click to show solution</summary>
+
+```{bash}
+$ uv self update
+info: Checking for updates...
+success: You're on the latest version of uv (v0.9.7)
+```
+
+</details>
+
+
+
 
 ## Additional documentation
 
