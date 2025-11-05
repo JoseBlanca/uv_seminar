@@ -4,7 +4,8 @@
 ## TL;DR: just use uv
 
 [`uv`](https://docs.astral.sh/uv) is a very powerful and yet, starting to use it is very easy.
-Unless you depend on a very specific feature of conda, just use `uv` from now on, that's my advice.
+Unless you depend on a very specific feature of conda, like using non-Python conda supported software, just use `uv` from now on, that's my advice.
+If you use normally use `pip install`, start using `uv` and don't look back.
 
 If you don't know where to start, just [install](https://docs.astral.sh/uv/getting-started/installation/) `uv` and instead of doing:
 
@@ -487,7 +488,58 @@ success: You're on the latest version of uv (v0.9.7)
 
 </details>
 
+## Use different Python versions
 
+Run the primers.py script using a standard Python version (like 3.14.0) and the corresponding [free-threaded](https://docs.python.org/3/howto/free-threading-python.html) one (like 3.14.0t).
+(`uv` documentation regarding running scripts with different [Python versions](https://docs.astral.sh/uv/guides/scripts/#using-different-python-versions).)
+
+<details>
+<summary>💡 Click to show solution</summary>
+
+```{bash}
+$ uv run --python 3.14.0 scripts/primes.py 
+1 threads → 664579 primes in 18.58s
+4 threads → 664579 primes in 18.33s
+$ uv run --python 3.14.0t scripts/primes.py 
+1 threads → 664579 primes in 21.45s
+4 threads → 664579 primes in 9.04s
+```
+
+</details>
+
+## Run a script with dependencies
+
+Try to run the rich_print.py script.
+It will fail.
+([Running scripts](https://docs.astral.sh/uv/guides/scripts/) section in `uv`'s documentation).
+
+<details>
+<summary>💡 Click to show solution</summary>
+```{bash}
+$ uv run scripts/rich_print.py 
+ModuleNotFoundError: No module named 'rich'
+```
+</details>
+
+Now running adding to the command the required dependency using the `--with` argument.
+
+<details>
+<summary>💡 Click to show solution</summary>
+```{bash}
+$ uv run --with rich scripts/rich_print.py 
+```
+
+</details>
+
+Add the `rich` requirement to the [script metadata](https://packaging.python.org/en/latest/specifications/inline-script-metadata/#inline-script-metadata) using `uv add`.
+
+<details>
+<summary>💡 Click to show solution</summary>
+```{bash}
+$ uv run --with rich scripts/rich_print.py 
+```
+
+</details>
 
 
 ## Additional documentation
