@@ -488,7 +488,7 @@ success: You're on the latest version of uv (v0.9.7)
 
 </details>
 
-## Use different Python versions
+### Use different Python versions
 
 Run the primers.py script using a standard Python version (like 3.14.0) and the corresponding [free-threaded](https://docs.python.org/3/howto/free-threading-python.html) one (like 3.14.0t).
 (`uv` documentation regarding running scripts with different [Python versions](https://docs.astral.sh/uv/guides/scripts/#using-different-python-versions).)
@@ -507,7 +507,7 @@ $ uv run --python 3.14.0t scripts/primes.py
 
 </details>
 
-## Run a script with dependencies
+### Run a script with dependencies
 
 Try to run the rich_print.py script.
 It will fail.
@@ -546,11 +546,90 @@ Now you can run the script without the `--with` argument. You could even send th
 
 <details>
 <summary>💡 Click to show solution</summary>
+
 ```{bash}
 $ uv run scripts/rich_print.py 
 ```
 </details>
 
+### Create and manage a project
+
+Create a project named mandelbrot and copy in it the `mandelbrot.py` script.
+Check the [projects](https://docs.astral.sh/uv/guides/projects/) section in the `uv` documentation.
+
+<details>
+<summary>💡 Click to show solution</summary>
+
+```{bash}
+$ uv init mandelbrot
+Initialized project `mandelbrot` at `~/edu/uv_seminar/mandelbrot`
+```
+</details>
+
+Take a look at the contents of the `.python-version`, and `pyproject.toml` files.
+
+Now add the `matplotlib` and `numpy` dependencies to the project.
+
+<details>
+<summary>💡 Click to show solution</summary>
+
+```{bash}
+$ cd mandelbrot
+~/edu/mandelbrot$ uv add matplotlib numpy
+Initialized project `mandelbrot` at `~/edu/uv_seminar/mandelbrot`
+```
+</details>
+
+Checkout the lines added to the `pyproject.toml` file, the newly created `uv.lock` file and the virtual environment directory `.venv`, and then run the mandelbrot script.
+
+Now to check that `uv` is capable of regenerating the virtual environment directory at any time delete the `.venv` directory, run the mandelbrot script again and take a look at the regenerated `.venv` directory.
+
+<details>
+<summary>💡 Click to show solution</summary>
+
+```{bash}
+$ cd mandelbrot
+~/edu/mandelbrot$ rm -r .venv
+~/edu/mandelbrot$ ls .venv
+~/edu/mandelbrot$ uv run mandelbrot.py
+~/edu/mandelbrot$ ls .venv
+```
+</details>
+
+Upgrade all project library dependencies to the latest versions using `uv sync --upgrade`.
+
+<details>
+<summary>💡 Click to show solution</summary>
+
+```{bash}
+~/edu/mandelbrot$ uv sync --upgrade
+```
+</details>
+
+Now install the project as editable to be able to run tests and import any library that you would create.
+To do it run:
+
+```{bash}
+~/edu/mandelbrot$ uv add --dev --editable .
+```
+
+Now open a python terminal and check that you can import mandelbrot.
+
+```{bash}
+~/edu/mandelbrot$ uv run python
+>>> import mandelbrot
+```
+
+### Install a tool using uvx
+
+With `uv` can directly use Python [tools](https://docs.astral.sh/uv/concepts/tools/) like [ruff](https://docs.astral.sh/ruff/) or [ty](https://docs.astral.sh/ty/).
+
+Try to run ruff on the `mandelbrot.py` file.
+
+```{bash}
+$ uvx ruff check mandelbrot.py
+All checks passed!
+```
 
 ## Additional documentation
 
