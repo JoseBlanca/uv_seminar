@@ -531,14 +531,24 @@ $ uv run --with rich scripts/rich_print.py
 
 </details>
 
-Add the `rich` requirement to the [script metadata](https://packaging.python.org/en/latest/specifications/inline-script-metadata/#inline-script-metadata) using `uv add`.
+Add the `rich` requirement to the [script metadata](https://packaging.python.org/en/latest/specifications/inline-script-metadata/#inline-script-metadata) using `uv add` and check the way in which this changes the script.
 
 <details>
 <summary>💡 Click to show solution</summary>
 ```{bash}
-$ uv run --with rich scripts/rich_print.py 
+$ uv add --script scripts/rich_print.py 'rich'
+Updated `scripts/rich_print.py`
 ```
 
+</details>
+
+Now you can run the script without the `--with` argument. You could even send the script to a colleague that will be able to running without caring for its dependencies, by just using `uv`.
+
+<details>
+<summary>💡 Click to show solution</summary>
+```{bash}
+$ uv run scripts/rich_print.py 
+```
 </details>
 
 
