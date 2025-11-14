@@ -682,3 +682,7 @@ If you want to learn more about virtual environments and, specially, if you want
 Another [introduction](https://www.saaspegasus.com/guides/uv-deep-dive/) to `uv`.
 
 More information about the [pyproject.toml](https://realpython.com/python-pyproject-toml/) file.
+
+## Stay up to date
+
+A great way to knowing about the latests Python developments and trends is to listen to the excellent [PythonBytes](https://pythonbytes.fm/) podcast.
