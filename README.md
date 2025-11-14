@@ -437,7 +437,7 @@ Now, not only the code works, but you can be sure that it will run in the future
 
 As an exercise create another project to run the modern version of the emoji code: "modern_emoji.py".
 
-### Adding the own project library
+### Adding the project library as a dependency
 
 In many cases you'll need to install the library that you are developing to the virtual environment of the project.
 This is mostly needed when your own code should be importable as a package, e.g. for testing or using a CLI entry point.
@@ -445,6 +445,44 @@ You can do that.
 
 ```bash
 $ uv pip install -e .
+```
+
+### Dependency tree
+
+You can see the library dependency tree of your project with:
+
+```{bash}
+$ uv pip tree
+matplotlib v3.10.7
+├── contourpy v1.3.3
+│   └── numpy v2.3.4
+├── cycler v0.12.1
+├── fonttools v4.60.1
+├── kiwisolver v1.4.9
+├── numpy v2.3.4
+├── packaging v25.0
+├── pillow v12.0.0
+├── pyparsing v3.2.5
+└── python-dateutil v2.9.0.post0
+    └── six v1.17.0
+```
+
+You can also `ask uv pip tree` to show you which are the rules that has followed to decide to install these package versions and to show you which ones are outdated.
+
+```{bash}
+$ uv pip tree --show-version-specifiers --outdated
+matplotlib v3.10.7
+├── contourpy v1.3.3 [required: >=1.0.1]
+│   └── numpy v2.3.4 [required: >=1.25]
+├── cycler v0.12.1 [required: >=0.10]
+├── fonttools v4.60.1 [required: >=4.22.0]
+├── kiwisolver v1.4.9 [required: >=1.3.1]
+├── numpy v2.3.4 [required: >=1.23]
+├── packaging v25.0 [required: >=20.0]
+├── pillow v12.0.0 [required: >=8]
+├── pyparsing v3.2.5 [required: >=3]
+└── python-dateutil v2.9.0.post0 [required: >=2.7]
+    └── six v1.17.0 [required: >=1.5]
 ```
 
 ### Requirements.txt
