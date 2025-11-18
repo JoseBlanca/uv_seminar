@@ -3,9 +3,9 @@
 
 ## TL;DR: just use uv
 
-[`uv`](https://docs.astral.sh/uv) is a very powerful and yet, starting to use it is very easy.
+[`uv`](https://docs.astral.sh/uv) is very powerful and yet, starting to use is very easy.
 Unless you depend on a very specific feature of conda, like using non-Python conda supported software, just use `uv` from now on, that's my advice.
-If you use normally use `pip install`, start using `uv` and don't look back.
+If you normally use `pip install`, start using `uv` and don't look back.
 
 If you don't know where to start, just [install](https://docs.astral.sh/uv/getting-started/installation/) `uv` and instead of doing:
 
@@ -27,14 +27,14 @@ You will need a computer in which to [install `uv`](https://docs.astral.sh/uv/ge
 
 Finally, I'm also assuming that you don't know `uv`, if you already do, this introduction is not for you.
 
-What you don't need is previous knowledge about virtual environments, project management or Python packages.
+What you don't need is previous knowledge about [virtual environments](https://docs.python.org/3/glossary.html#term-virtual-environment), project management or Python packages.
 
-## Objetives
+## Objectives
 
 After this seminar you will be able to:
 
 - Install and update Python with uv.
-- Understand what virtual environments and lock files are.
+- Understand what virtual environments and [lock files](https://peps.python.org/pep-0751/) are.
 - Run scripts with isolated dependencies.
 - Create and manage reproducible projects.
 
@@ -63,7 +63,7 @@ $ pip install package_to_install
 ```
 
 If you would run this command `pip` would download the package from PyPI and install it in your system Python.
-Any package manager has to take into account package dependencies, for instance, [pandas](https://pandas.pydata.org/) requires [NumPy](https://numpy.org/), so in order to install pandas you first need to install NumPy, and that is something that the package manager would do for you.
+Any package installer has to take into account package dependencies, for instance, [pandas](https://pandas.pydata.org/) requires [NumPy](https://numpy.org/), so in order to install pandas you first need to install NumPy, and that is something that the package installer would do for you.
 
 Besides [`pip`](https://en.wikipedia.org/wiki/Pip_(package_manager)), there are other package installers, like [`conda`](https://docs.conda.io/projects/conda/) or [`uv`](https://docs.astral.sh/uv/).
 As we will see `conda`and `uv` have extra features not available in `pip`.
@@ -77,7 +77,7 @@ It is common for these packages to include both Python and non-Python code and `
 - It is quite good installing complex scientific packages like NumPy, SciPy, or TensorFlow.
 
 `conda` has its own ecosystem, unlike `pip` or `uv`, `conda` does not work with the standard Python PyPI repository. 
-`conda` tends to have specialized compilations of some popular scientific packages, but it has much less packages available that PyPI, and `conda` is not compatible with `pip`, so if you can't mix and match conda and non-conda packages.
+`conda` tends to have specialized compilations of some popular scientific packages, but it has much less packages available that PyPI, and `conda` is not compatible with `pip`, so if you can't mix and match conda and non-conda packages in the same project.
 Moreover, `uv` is much faster and it can also do the project management.
 
 The [Anaconda Distribution](https://www.anaconda.com/) is a bundle that includes `conda` plus:
@@ -104,18 +104,18 @@ Although `conda` is free software, the anaconda distribution is [not free](https
 - Create and manage virtual environments.
 
 `uv` can replace totally or partially:
-- Package installers like: `pip` or `conda`.
+- Package installers like: [`pip`](https://en.wikipedia.org/wiki/Pip_(package_manager)) or [`conda`](https://docs.conda.io/projects/conda/).
 - Virtual environment tools like: [virtualenv](https://virtualenv.pypa.io/), [venv](https://docs.python.org/es/3.13/library/venv.html) or `conda`.
 - Project management tools like: [Poetry](https://python-poetry.org/) or [PDM](https://pdm-project.org/).
 
 While these tools remain viable options, `uv` integration and speed make it more convenient and fast.
-Moreover, `uv` is multiplatform (Windows, Mac, and Linux), very fast, in most cases, does not require administrative privileges to be installed and it [free software](https://en.wikipedia.org/wiki/Free_and_open-source_software).
+Moreover, `uv` is multiplatform (Windows, Mac, and Linux), very fast, in most cases, does not require administrative privileges to be installed and it is [free software](https://en.wikipedia.org/wiki/Free_and_open-source_software).
 
 | Tool    | Strengths                   | Weaknesses               |
 | ------- | --------------------------- | ------------------------ |
 | `pip`   | Ubiquitous, standard        | No project management    |
-| `conda` | Handles non-Python deps     | Slow, separate ecosystem |
-| `uv`    | Fast, unified, reproducible | Newer, still evolving    |
+| `conda` | Handles non-Python dependencies     | Slow, separate ecosystem |
+| `uv`    | Fast, unified, reproducible | It doesn't handle non-Python dependencies |
 
 
 ### uv installation
@@ -138,9 +138,9 @@ $ uv self update
 
 There are many ways of installing Python.
 You can go to [python.org](https://www.python.org/) download the latest Python version and install it,
-you can get it using the software package manager or software store of your Operating System or you can use other tools, and now you get new way, the one that I consider the simplest and most convenient way and the one that I now recommend: `uv`.
+you can get it using the software package manager or software store of your Operating System, or you can use other tools, and now you get a new way, the one that I consider the simplest and most convenient and the one that I now recommend: `uv`.
 
-`uv` can work with the Python software installed in your system, but it is not necessary to have any Python installed at all, if you don't have it `uv` will do it for you.
+`uv` can work with the `python` versions installed in your system, but it is not necessary to have any `python` installed at all, if you don't have it `uv` will do it for you.
 Nowadays, I usually don't have a system Python installed in my computer, I just use `uv`.
 
 `uv` can discover the existing Python installations.
@@ -149,6 +149,8 @@ For example, to list all the Python versions that `uv`can detect in your system,
 ```bash
 $ uv python list
 ```
+
+Be aware that this list will depend on the `uv` version, so be sure that you have the latest `uv` if you want to have an updated `python` version list.
 
 To install a specific version just do:
 
@@ -198,9 +200,15 @@ ModuleNotFoundError: No module named 'matplotlib'
 ```
 
 `uv` is trying to run the script for us, but it is not finding the matplotlib library.
+
 If you are used to install your Python libraries in the system `python` using `pip` you might be tempted to run *pip install matplotlib* to fix the issue, but this is something that I wouldn't recommend at all and that wouldn't work with `uv`.
+This will fail even if you have previously installed matplotlib in other project or at the system level.
+
+`uv` isolates the environment in which runs every project, or in this case, every script.
 `uv` uses a virtual environment (more about that later) for each run, so installing matplotlib in the system `python` won't solve the issue.
-Moreover, even if you would use your system `python` and `pip` you would still have a problem, if you would try to run this script in the future or in a different system you might not have the required libraries installed, and if you send the script to a colleague or a friend, it won't work unless he also installs the libraries, and that information is not included in the script.
+
+This is a good practice that you should follow and that `uv` enforces.
+Even if you would use your system `python` and `pip` you would still have a problem, if you would try to run this script in the future or in a different system you might not have the required libraries installed, and if you send the script to a colleague or a friend, it won't work unless he also installs the libraries, and that information is not included in the script.
 
 `uv` allows us to specify the dependencies when we run a script.
 
@@ -229,19 +237,17 @@ If you would read PEP 722 you would realize that the right why to document that 
 # ///
 ```
 
-You might try to write this comment manually (not a trivial thing to do) and you might try to run the script with ```python scripts/mandelbrot.py```, but that would fail, again.
-Why? Because although the script now describes which are the dependencies, the `python` command will ignore the comment.
-So, what's the point then? We'll, just use `uv` and everything will be fixed for you.
-
-First, `uv` can add the dependencies to the file for us.
+You might try to write this comment manually (not a trivial thing to do), just use `uv` and everything will be fixed for you.
+`uv` can add the dependencies to the file for us.
 
 ```bash
 $ uv add --script scripts/mandelbrot.py 'matplotlib' 'numpy'
 Updated `scripts/mandelbrot.py`
 ```
 
-Now uv has added the dependencies comment for us to the file and moreover, if we run the script using uv, it will get and use the required libraries for us.
 *`uv` add* is the way to add dependencies to a script or project.
+Now `uv` has added the dependencies comment for us to the file and, if we run the script using `uv`, it will get and use the required libraries for us.
+
 
 ```bash
 $ uv run scripts/mandelbrot.py
@@ -257,7 +263,7 @@ The first time that you run the script it might take a while because it might ha
 
 ### Incompatible library versions
 
-Virtual environments allow you to create isolated environments that use different versions of libraries or Python itself. 
+[Virtual environments](https://docs.python.org/3/glossary.html#term-virtual-environment) allow you to create isolated environments that might use different versions of libraries or, even, of `python` itself. 
 Python libraries often add incompatible changes between versions, for instance, they might first deprecate and then remove some features.
 
 Let's try to run the `legacy_emoji.py` script:
@@ -281,8 +287,8 @@ Installed 1 package in 0.33ms
 Python is 👍
 ```
 
-So, we might think that installing the old version at the system level would solve our problem, but that, obviously, is not a great idea.
-One problem is that projects that depend of modern version would not work.
+So, we might think that installing the old version at the system level would solve our problem, but that is not a great idea.
+One problem is that projects that depend of modern versions of the library would not work.
 
 ```bash
 $ uv run --with "emoji<1.0" scripts/modern_emoji.py 
@@ -301,19 +307,19 @@ Python is 👍
 ```
 
 So, if we install an old version of the library, the modern code won't work and if we install a modern version, the old code won't work.
-Are we in an insolvable catch-22 situation? If we only had the system Python and system wide library installs we would, but, fortunately we can use virtual environments to isolate projects and library installations, so we can have different versions of the same library installed for different projects.
+Are we in an insolvable catch-22 situation? If we only had the system `python` and system wide library installs we would, but, fortunately we can use virtual environments to isolate projects and library installations, so we can have different versions of the same library installed for different projects.
 
 You might be thinking that the example that I have just shown is contrived and that that would not happen usually, but if you do, you better think twice.
 Libraries are removing old code and, especially, old APIs all the time. For instance, NumPy and pandas have done it recently. So if you created a project that depends on Numpy or pandas a year or a couple of years ago, that code might not run anymore with the current versions of the library.
 
 If you install packages by just opening a terminal and running pip, you work might be not reproducible. For once, you are not being explicit of the libraries upon which your current project depends, and moreover, library versions for different projects might be incompatible.
 
-Installing packages outside a virtual environment[https://docs.python.org/3/glossary.html#term-virtual-environment] is a very, very bad idea.
+Installing packages outside a virtual environment is a very, very bad idea.
 I repeat, if you care at all for the sanity of your system or for the reproducibility of your work, do not install packages outside a virtual environment.
 
 ### What is a virtual environment
 
-A Python virtual environment[https://docs.python.org/3/glossary.html#term-virtual-environment] is an isolated workspace that contains its own installation of Python and its own set of packages, independent from the system’s global Python. It allows you to manage project-specific dependencies without interfering with other projects or requiring administrator permissions. Each virtual environment keeps its own site-packages directory and can have different library versions, ensuring that software runs reproducibly.
+A Python [virtual environment](https://docs.python.org/3/glossary.html#term-virtual-environment) is an isolated workspace that contains its own installation of Python and its own set of packages, independent from the system’s global Python. It allows you to manage project-specific dependencies without interfering with other projects or requiring administrator permissions. Each virtual environment keeps its own site-packages directory and can have different library versions, ensuring that software runs reproducibly.
 
 For a standard Python user, even for one not working on large projects, virtual environments offer several **practical advantages**:
 
@@ -321,17 +327,17 @@ For a standard Python user, even for one not working on large projects, virtual 
    Different projects often require different versions of the same package. A virtual environment keeps each project’s dependencies separate, so updating one package doesn’t break another project.
 
 2. **Keep the system Python clean:**
-   Installing packages globally can clutter or even damage the system Python (especially on Linux or macOS, where it’s used by the OS). Virtual environments prevent that risk by isolating installations. In fact, if you use uv you won't even need a system Python at all.
+   Installing packages globally can clutter or even damage the system `python` (especially on Linux or macOS, where it’s used by the OS). Virtual environments prevent that risk by isolating installations. In fact, if you use `uv` you won't even need a system `python` at all.
 
 3. **Experiment safely:**
    You can try new packages, versions, or configurations without affecting your main setup. If something goes wrong, you just delete the environment and start fresh.
 
-Installing a Python package involves, basically, copying the package contents to a location in which Python looks for files when trying to import modules. 
+Installing a Python package involves, basically, copying the package contents to a location in which `python` looks for files when trying to import modules. 
 This location might be a general, system-wide, one or a different place for every project.
-A [virtual environment](https://docs.python.org/3/glossary.html#term-virtual-environment) is just a folder with several subfolders in it that will hold a symlink to a `python` executable along with any library that you install in that environment, and usually you have one such environment for every project.
+A virtual environment is just a folder with several subfolders in it that will hold a symlink to a `python` executable along with any library that you install in that environment, and usually you have one such environment for every project.
 This environments keep each project isolated from every other project and from the system-wide Python installation.
 
-You don't need to know where your packages are installed, but if you are curious, you can ask the Python interpreter to show you these locations.
+You don't need to know where your packages are installed, but if you are curious, you can ask the `python` interpreter to show you these locations.
 
 ```bash
 $ uv run python
@@ -358,7 +364,7 @@ This automatic management:
    If you manage your environment using a list of dependencies (e.g., `requirements.txt` or `pyproject.toml`), your code will be able to run by others, or by you in the future, under the exact same conditions.
 
 2. **Simplifies deployment:**
-   When you deploy a project, you will be able to create the same environment easily in a different machine. If you have just Python dependencies virtual environments will be everything you need, but if you have other dependencies, like non-Python command line tools you might want to familiarize yourself with container (using tools like Docker or Podman).
+   When you deploy a project, you will be able to create the same environment easily in a different machine. If you have just Python dependencies virtual environments will be everything you need, but if you have other dependencies, like non-Python command line tools you might want to familiarize yourself with container technologies (using tools like [docker](https://www.docker.com/) or [podman](https://podman.io/)).
 
 And the best part is that uv manages your virtual environments for you, you can even forget about them.
 
@@ -420,7 +426,7 @@ bin  CACHEDIR.TAG  lib  lib64  pyvenv.cfg
 ```
 
 This will be the virtual environment that `uv` will use to run the code in that project.
-The first time you run the add command, UV creates a new virtual environment in the current working directory and installs the specified dependencies. Be aware this virtual environment will be automatically managed by uv, so just ignore it, and do not try to use pip in it.
+The first time you run the add command, `uv` creates a new virtual environment in the current working directory and installs the specified dependencies. Be aware this virtual environment will be automatically managed by uv, so just ignore it, and do not try to use pip in it.
 `uv` and `pip` should not be used at the same time in the same environment, and moreover, `uv` might decide to remove or update the virtual environment directory at any time.
 
 Finally, `uv` has created a new important file: *uv.lock*.
